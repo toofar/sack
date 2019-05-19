@@ -466,6 +466,10 @@ elif [[ "$sack__option" == "-grep" ]]; then
     sack__default_tool='grep'
     sack__color_param='--color=always'
     shift
+elif [[ "$sack__option" == "-gg" ]]; then
+    sack__default_tool='git grep'
+    sack__color_param='--color=always -n'
+    shift
 # sack profiles - allow switching between different profiles
 # Show help printout
 elif [[ -z "$sack__option" || "$sack__option" == "-h" || "$sack__option" == "--help" || "$sack__option" == "--info" ]]; then
