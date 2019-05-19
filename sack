@@ -521,12 +521,52 @@ if [[ "$sack__profile_name" == "no_profile" ]]; then
     # multiple terminal / shell sessions
     sack__flags=""
     sack__cwd=$(pwd) 
+    unset sack__cwd
 else
     sack__flags="$sack__profile_preset_flags"
     sack__cwd="$sack__profile_preset_directory"
     # Add automatic tilda expansion if it's not in already
     sack__cwd=$(eval "echo $sack__cwd")
 fi
+
+pwd="$(pwd)"
+declare -a args=()
+for d in "$@";do
+  # Doesn't handle --
+  case $d in
+    --)
+      if [ -n "$pat" ];then
+        unset pat
+      fi
+      args+=("$d")
+      ;;
+    -*)
+      args+=("$d")
+      ;;
+    *)
+      if [ -z "$pat" ];then
+        pat="$d"
+        args+=("$d")
+      elif [ -d "$d" ] || [ -e "$d" ];then
+        case $d in
+          /*)
+            args+=("$d")
+            ;;
+          *)
+            args+=("$pwd/$d")
+              ;;
+          esac
+          dd="$dd $d"
+        else
+          args+=("$d")
+        fi
+        ;;
+    esac
+done
+
+[ -z "$dd" ] && args+=("$pwd")
+[ -n "$sack__cwd" ] && args+=("$sack__cwd")
+set -- "${args[@]}"
 
 # Announce start of sack:
 echo ""
