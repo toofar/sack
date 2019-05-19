@@ -530,6 +530,7 @@ else
 fi
 
 pwd="$(pwd)"
+pos_only="" # into positional arguments now
 declare -a args=()
 for d in "$@";do
   # Doesn't handle --
@@ -539,8 +540,9 @@ for d in "$@";do
         unset pat
       fi
       args+=("$d")
+      pos_only="y"
       ;;
-    -*)
+    ${pos_only}-*)
       args+=("$d")
       ;;
     *)
